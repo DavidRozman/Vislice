@@ -16,17 +16,17 @@ with open('Vislice/besede.txt') as datoteka_bazena:
 class Igra:
     
     def __init__(self, geslo, crke=None):
-        self.geslo = geslo
+        self.geslo = geslo.lower()
         if crke is None:
             self.crke = []
         else:
-            self.crke = crke
+            self.crke = [c.lower() for c in crke]
 
     def pravilne_crke(self):
         return [crka for crka in self.crke if crka in self.geslo]
     
     def napacne_crke(self):
-        return [crka for crka in self.crke if crka not in self.crke]
+        return [crka for crka in self.crke if crka not in self.geslo]
     
     def stevilo_napak(self):
         return len(self.napacne_crke())
@@ -53,17 +53,20 @@ class Igra:
         return ' '.join(self.napacne_crke())
 
     def ugibaj(self, crka):
-        velika_crka = crka.upper
-        if self.zmaga():
-            return ZMAGA
-        elif self.poraz():
-            return PORAZ
-        else:
-            if velika_crka in self.pravilne_crke():
+        mala_crka = crka.lower()
+        if mala_crka in self.crke:
+            return PONOVLJENA_CRKA
+        self.crke.append(mala_crka)
+        if mala_crka in self.geslo:
+            if self.zmaga():
+                return ZMAGA
+            else:
                 return PRAVILNA_CRKA
-            elif velika_crka in self.napacne_crke():
+        else:
+            if self.poraz():
+                return PORAZ
+            else:
                 return NAPACNA_CRKA
-        
 
 def nova_igra():
     import random
